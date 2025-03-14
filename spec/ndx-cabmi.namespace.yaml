@@ -1,0 +1,11 @@
+namespaces:
+- author:
+  - Nuria Vendrell Llopis
+  contact:
+  - nvl2@uab.edu
+  doc: Extension to include CABMI closed loop experiments
+  name: ndx-cabmi
+  schema:
+  - namespace: core
+  - source: ndx-cabmi.extensions.yaml
+  version: 0.1.0
