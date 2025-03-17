@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os.path
 
-from pynwb.spec import NWBNamespaceBuilder, export_spec, NWBGroupSpec, NWBAttributeSpec
+from pynwb.spec import NWBNamespaceBuilder, export_spec, NWBGroupSpec, NWBAttributeSpec, DatasetSpec
 
 # TODO: import other spec classes as needed
 # from pynwb.spec import NWBDatasetSpec, NWBLinkSpec, NWBDtypeSpec, NWBRefSpec
@@ -30,73 +30,181 @@ def main():
     # TODO: define your new data types
     # see https://pynwb.readthedocs.io/en/stable/tutorials/general/extensions.html
     # for more information
+
+    # Calibration metadata group
     Calibration_metadata = NWBGroupSpec(neurodata_type_def='Calibration_metadata',
                                         neurodata_type_inc='NWBDataInterface',
-                                        doc='Metadata result of the calibration and needed for the BMI')
+                                        doc='Metadata result of the calibration and needed for the BMI', quantity='*')
     Calibration_metadata.add_attribute(name='description', doc='describe the metadata', dtype='text', required=True)
     Calibration_metadata.add_attribute(name='category', doc='free category field', dtype='text', required=False)
     Calibration_metadata.add_attribute(name='help', doc='help', dtype='text', value='stores whatev data')
-    Calibration_metadata.add_attribute(name='Ensemble_indeces',
-                                       doc='indeces of the neurons used as part of the ensemble', dtype='int32',
-                                       dims=['number of ensemble neurons'], required=True)
-    Calibration_metadata.add_attribute(name='Decoder',
-                                       doc='multiplier to each of the ensemble neurons', dtype='float64',
-                                       dims=['number of ensemble neurons'], required=True)
-    Calibration_metadata.add_attribute(name='Target',
-                                       doc='Threshold for the cursor, can be one or two per dimension of the cursor',
-                                       dtype='float64', dims=['number of targets'], required=True)
-    Calibration_metadata.add_attribute(name='Ensemble_mean',
-                                       doc='mean of the activity of each of the ensemble neurons during calibration',
-                                       dtype='float64', dims=['number of ensemble neurons'], required=False)
-    Calibration_metadata.add_attribute(name='Ensemble_sd',
-                                       doc='standard deviation of the activity of each of the ensemble neurons'
-                                           ' during calibration', dtype='float64', dims=['number of ensemble neurons'],
-                                       required=False)
+    Calibration_metadata.add_dataset(name='ensemble_indexes', doc='indexes of the neurons used as part of the ensemble',
+                                     dtype='int32', dims=['number of ensemble neurons'],
+                                     required=True)
+    Calibration_metadata.add_dataset(name='decoder', doc='multiplier to each of the ensemble neurons', dtype='float64',
+                                     dims=['number of ensemble neurons'], required=True)
+    Calibration_metadata.add_dataset(name='target', doc='Threshold for the cursor, can be one or two per dimension'
+                                                        ' of the cursor',
+                                     dtype='float64', dims=['number of targets'], required=True)
+    Calibration_metadata.add_attribute(name='feedback_flag',
+                                       doc='if there is auditory tone as feedback or not',
+                                       dtype='bool', required=True)
+    Calibration_metadata.add_dataset(name='feedback_Target', doc='if there is auditory tone as feedback, value in Hz'
+                                                                 ' for the auditory tone for each of the targets,'
+                                                                 ' can be one or two per dimension of the cursor',
+                                     dtype='float64', dims=['number of audio targets'], required=False)
+    Calibration_metadata.add_dataset(name='ensemble_mean', doc='mean of the activity of each of the ensemble neurons'
+                                                               ' during calibration',
+                                     dtype='float64', dims=['number of ensemble neurons'], required=False)
+    Calibration_metadata.add_dataset(name='ensemble_sd', doc='standard deviation of the activity of each of the'
+                                                             ' ensemble neurons during calibration', dtype='float64',
+                                     dims=['number of ensemble neurons'], required=False)
 
-    BMI_parameters = NWBGroupSpec(neurodata_type_def='Parameters needed to run the BMI',
+    # BMI parameters group
+    BMI_parameters = NWBGroupSpec(neurodata_type_def='Parameters_BMI',
                                   neurodata_type_inc='NWBDataInterface',
-                                  doc='parameters required for running calibration and BMI')
-    BMI_parameters.add_attribute(name='Back_to_baseline_threshold', doc='Required value of the cursor to start a '
-                                                                        'new trial after going back to baseline',
-                                 dtype='float64', dims=['number of targets'], required=True)
-    BMI_parameters.add_attribute(name='Back_to_baseline_frames', doc='Required number of frames for the cursor to be'
+                                  doc='parameters required for running calibration and BMI', quantity='*')
+    BMI_parameters.add_attribute(name='description', doc='describe the BMI_parameters', dtype='text', required=True)
+    BMI_parameters.add_attribute(name='category', doc='free category field', dtype='text', required=False)
+    BMI_parameters.add_attribute(name='help', doc='help', dtype='text', value='stores whatevs data')
+    BMI_parameters.add_dataset(name='back_to_baseline_threshold', doc='Required value of the cursor to start a '
+                                                                      'new trial after going back to baseline',
+                               dtype='float64', dims=['number of targets'], required=False)
+    BMI_parameters.add_attribute(name='back_to_baseline_frames', doc='Required number of frames for the cursor to be'
                                                                      'over the back_to_baseline_threshold for it to'
                                                                      'be considered back to baseline',                                                          'going back to baseline',
-                                 dtype='int32', required=True)
-    BMI_parameters.add_attribute(name='number_conditions_target', doc='number of conditions to be met by the cursor '
-                                                                  'to be considered as hitting a target',
-                                 dtype='int32', required=True)
+                                 dtype='int32', required=False)
     BMI_parameters.add_dataset(name='conditions_target', doc='value of each of the conditions to be met by the cursor'
                                                              ' for it to be considered hitting a target',
-                               dtype='float64', dims=['number of conditions'], required=True)
+                               dtype='float64', dims=['number of conditions'], required=False)
     BMI_parameters.add_dataset(name='seconds_per_reward_range', doc=' a range on how many frames should elapse before'
                                                                     ' a reward is expected.',
-                               dtype='int32', dims=['lower value, higher value'], shape=[None, 2], required=True)
+                               dtype='int32', dims=['lower_value|higher_value'], shape=[2], required=False)
+    BMI_parameters.add_attribute(name='prefix_window_frames', doc='number microscopy frames to ignore at start of bmi '
+                                                                  'acquisition',
+                                 dtype='int32', required=False) #previously prefix_win
+    BMI_parameters.add_attribute(name='dff_baseline_window_frames', doc='Period at the beginning of the BMI without '
+                                                                        'calculating cursor to establish the dff'
+                                                                        'baseline of the ensemble activity',
+                                 dtype='int32', required=False) # previously f0_win
+    BMI_parameters.add_attribute(name='smooth_window_frames', doc='number of frames to use for smoothing dff and avoid'
+                                                                 'motion artifacts to affect the cursor',
+                                 dtype='int32', required=False) # previously dff_win
+    BMI_parameters.add_attribute(name='cursor_zscore_bool', doc='if 1, neural activity is zscored before going into '
+                                                                'cursor calculation. if 0, activity is not zscored',
+                                 dtype='bool', required=False)
+    BMI_parameters.add_attribute(name='relaxation_window_frames', doc='number of frames after a hit to stop the BMI',
+                                 dtype='int32', required=False)
+    BMI_parameters.add_attribute(name='timelimit_frames', doc='time limit in frames that the animal has to finish a '
+                                                              'given trial',
+                                 dtype='int32', required=False) # many CaBMI do not have time limits for trials
+    BMI_parameters.add_attribute(name='timeout_window_frames', doc='if there is a time limit for a trial, the number of'
+                                                                  ' frames after a miss to stop the BMI as a punishment',
+                                 dtype='int32', required=False)
+
+    # cursor group
+    CaBMI_series = NWBGroupSpec(neurodata_type_def="CaBMISeries", neurodata_type_inc="TimeSeries",
+                                 doc="Data collected while performing a CaBMI experiment",
+                                 datasets=[NWBDatasetSpec(name='cursor',
+                                                          doc='values of the cursor obtained from decoding neural data',
+                                                          dtype='float64', dims=['degrees_freedom, BMI_frames'],
+                                                          required=True),
+                                           NWBDatasetSpec(name='raw_activity',
+                                                          doc='Raw activity of the ensemble neurons', dtype='float64',
+                                                          dims=['number_ensemble_neurons', 'BMI_frames'], required=False),
+                                           NWBDatasetSpec(name='baseline_vector',
+                                                          doc='Baseline of the fluorescence for each of the ensemble '
+                                                              'neurons. Used to reliable calculate the dff of the '
+                                                              'ensemble neurons. Updated overtime', dtype='float64',
+                                                          dims=['number_ensemble_neurons', 'BMI_frames'], required=False),
+                                           NWBDatasetSpec(name='self_hits',
+                                                          doc='Boolean array with 1 when a hit was achieved due to the'
+                                                              'normal (during BMI) activity of ensemble neurons',
+                                                          dtype='bool', dims=['BMI_frames'], required=True),
+                                           NWBDatasetSpec(name='stim_hits',
+                                                          doc='Boolean array with 1 when a hit was achieved due to'
+                                                              'manipulations to the circuit',
+                                                          dtype='bool', dims=['BMI_frames'], required=False),
+                                           NWBDatasetSpec(name='self_reward',
+                                                          doc='Boolean array with 1 when a reward was given after a self'
+                                                              'hit was achieved',
+                                                          dtype='bool', dims=['BMI_frames'], required=True),
+                                           NWBDatasetSpec(name='stim_reward',
+                                                          doc='Boolean array with 1 when a reward was given after a stim'
+                                                              'hit was achieved',
+                                                          dtype='bool', dims=['BMI_frames'], required=False),
+                                           NWBDatasetSpec(name='stim_delivery',
+                                                          doc='Boolean array with 1 when a stim was performed',
+                                                          dtype='bool', dims=['BMI_frames'], required=False),
+                                           NWBDatasetSpec(name='trial_start',
+                                                          doc='Boolean array with 1 when a new trial started',
+                                                          dtype='bool', dims=['BMI_frames'], required=True),
+                                           NWBDatasetSpec(name='time_vector',
+                                                          doc='time it took to complete a frame in ms',
+                                                          dtype='float64', dims=['BMI_frames'], required=False),
+                                           NWBDatasetSpec(name='scheduled_stim',
+                                                          doc='Indices of the frames that had been selected before'
+                                                              'the experiment starts to have a stim. For random stim'
+                                                              'control purposes or holographic pretrains',
+                                                          dtype='int32', dims=['number_stims'], required=False),
+                                           NWBDatasetSpec(name='scheduled_reward',
+                                                          doc='Indices of the frames that had been selected before'
+                                                              'the experiment starts to have a reward. For random '
+                                                              'reward control purposes or other experiments',
+                                                          dtype='int32', dims=['number_rewards'], required=False),
+                                           ],
+                                 attributes=[NWBAttributeSpec(name='help', doc='help doc', dtype='text',
+                                                              value='stores information', required=False),
+                                             NWBAttributeSpec(name='target', doc='targets at which the'
+                                                                                 'cursor would end up in a *hit*',
+                                                              quantity='*', dtype='float64', required=True),
+                                             NWBAttributeSpec(name='self_hit_counter', doc='counter of the amount of '
+                                                                                           'self-hits achieved',
+                                                              dtype='int32', required=False),
+                                             NWBAttributeSpec(name='stim_hit_counter', doc='counter of the amount of '
+                                                                                           'stim-hits achieved',
+                                                              dtype='int32', required=False),
+                                             NWBAttributeSpec(name='self_reward_counter', doc='counter of the amount of'
+                                                                                              ' self-rewards obtained',
+                                                              dtype='int32', required=False),
+                                             NWBAttributeSpec(name='stim_reward_counter', doc='counter of the amount of'
+                                                                                           ' stim-rewards achieved',
+                                                              dtype='int32', required=False),
+                                             NWBAttributeSpec(name='scheduled_stim_counter',
+                                                              doc='counter of the amount of scheduled stims that were '
+                                                                  'ultimately given (some scheduled stims may be'
+                                                                  'missing if the bmi was busy with something else'
+                                                                  'or the animal was not on a trial)',
+                                                              dtype='int32', required=False),
+                                             NWBAttributeSpec(name='scheduled_reward_counter',
+                                                              doc='counter of the amount of scheduled rewards that were '
+                                                                  'ultimately given (some scheduled rewards may be'
+                                                                  'missing if the bmi was busy with something else'
+                                                                  'or the animal was not on a trial)',
+                                                              dtype='int32', required=False),
+                                             NWBAttributeSpec(name='trial_counter',
+                                                              doc='counter of the amount of trials started. This value'
+                                                                  'may differ from the amount of hits achieved if the'
+                                                                  'last trial was not finished',
+                                                              dtype='int32', required=False),
+                                             NWBAttributeSpec(name='number of hits',
+                                                              doc='If the experiments has a timelimit for trials, the'
+                                                                  'amount of trials that ended in a hit (achieved a'
+                                                                  'target)',
+                                                              dtype='int32', required=False),
+                                             NWBAttributeSpec(name='number of misses',
+                                                              doc='If the experiments has a timelimit for trials, the'
+                                                                  'amount of trials that ended in a miss (did not '
+                                                                  'achieve the target)',
+                                                              dtype='int32', required=False),
+                                             NWBAttributeSpec(name='last_frame',
+                                                              doc='number of the last frame being processed',
+                                                              dtype='int32', required=False)])
 
 
-    point_node = NWBGroupSpec(neurodata_type_def='PointNode',
-                              neurodata_type_inc='Node',
-                              doc='A node that represents a single 2D point in space (e.g. reward well, novel object'
-                                  ' location)',
-                              quantity='*',
-                              datasets=[NWBDatasetSpec(doc='x/y coordinate of this 2D point',
-                                                       name='coords',
-                                                       dtype='float',
-                                                       dims=['num_coords', 'x_vals|y_vals'],
-                                                       shape=[1, 2])],
-                              attributes=[
-                                  NWBAttributeSpec(name='help', doc='help doc', dtype='text', value='Apparatus Point')])
-
-    cursor_series = NWBGroupSpec(
-        neurodata_type_def="CursorSeries",
-        neurodata_type_inc="TimeSeries",
-        doc="An extension of TimeSeries to include BMI cursor data and metadata.",
-        attributes=[NWBAttributeSpec(name="Target", doc="Target result of calibration.", dtype="float64",
-                                     required=True)],
-    )
 
     # TODO: add all of your new data types to this list
-    new_data_types = [cursor_series]
+    new_data_types = [Calibration_metadata, BMI_parameters, CaBMI_series]
 
     # export the spec to yaml files in the spec folder
     output_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "spec"))
