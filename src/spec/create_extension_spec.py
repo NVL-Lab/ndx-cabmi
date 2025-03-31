@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os.path
 
-from pynwb.spec import NWBNamespaceBuilder, export_spec, NWBGroupSpec, NWBAttributeSpec, DatasetSpec
+from pynwb.spec import NWBNamespaceBuilder, export_spec, NWBGroupSpec, NWBAttributeSpec, NWBDatasetSpec
 
 # TODO: import other spec classes as needed
 # from pynwb.spec import NWBDatasetSpec, NWBLinkSpec, NWBDtypeSpec, NWBRefSpec
@@ -33,7 +33,7 @@ def main():
 
     # Calibration metadata group
     Calibration_metadata = NWBGroupSpec(neurodata_type_def='Calibration_metadata',
-                                        neurodata_type_inc='NWBDataInterface',
+                                        neurodata_type_inc='NWBContainer',
                                         doc='Metadata result of the calibration and needed for the BMI', quantity='*')
     Calibration_metadata.add_attribute(name='description', doc='describe the metadata', dtype='text', required=True)
     Calibration_metadata.add_attribute(name='category', doc='free category field', dtype='text', required=False)
@@ -49,7 +49,7 @@ def main():
     Calibration_metadata.add_attribute(name='feedback_flag',
                                        doc='if there is auditory tone as feedback or not',
                                        dtype='bool', required=True)
-    Calibration_metadata.add_dataset(name='feedback_Target', doc='if there is auditory tone as feedback, value in Hz'
+    Calibration_metadata.add_dataset(name='feedback_target', doc='if there is auditory tone as feedback, value in Hz'
                                                                  ' for the auditory tone for each of the targets,'
                                                                  ' can be one or two per dimension of the cursor',
                                      dtype='float64', dims=['number of audio targets'], required=False)
@@ -62,7 +62,7 @@ def main():
 
     # BMI parameters group
     BMI_parameters = NWBGroupSpec(neurodata_type_def='Parameters_BMI',
-                                  neurodata_type_inc='NWBDataInterface',
+                                  neurodata_type_inc='NWBContainer',
                                   doc='parameters required for running calibration and BMI', quantity='*')
     BMI_parameters.add_attribute(name='description', doc='describe the BMI_parameters', dtype='text', required=True)
     BMI_parameters.add_attribute(name='category', doc='free category field', dtype='text', required=False)
@@ -109,6 +109,12 @@ def main():
                                                           doc='values of the cursor obtained from decoding neural data',
                                                           dtype='float64', dims=['degrees_freedom, BMI_frames'],
                                                           required=True),
+                                           NWBDatasetSpec(name='cursor_audio',
+                                                          doc='values of the audio cursor obtained from mapping the '
+                                                              'neural cursor (obtained by decodind the neural data of'
+                                                              'ensemble neurons) to an auditory tone',
+                                                          dtype='int32', dims=['degrees_freedom, BMI_frames'],
+                                                          required=False),
                                            NWBDatasetSpec(name='raw_activity',
                                                           doc='Raw activity of the ensemble neurons', dtype='float64',
                                                           dims=['number_ensemble_neurons', 'BMI_frames'], required=False),
@@ -128,7 +134,7 @@ def main():
                                            NWBDatasetSpec(name='self_reward',
                                                           doc='Boolean array with 1 when a reward was given after a self'
                                                               'hit was achieved',
-                                                          dtype='bool', dims=['BMI_frames'], required=True),
+                                                          dtype='bool', dims=['BMI_frames'], required=False),
                                            NWBDatasetSpec(name='stim_reward',
                                                           doc='Boolean array with 1 when a reward was given after a stim'
                                                               'hit was achieved',
@@ -202,9 +208,47 @@ def main():
                                                               dtype='int32', required=False)])
 
 
+    ROI_metadata = NWBGroupSpec(neurodata_type_def='ROI_metadata', neurodata_type_inc='NWBContainer',
+                                doc='Information of the rois used during the experiment',
+                                datasets=[NWBDatasetSpec(name='image_mask_roi',
+                                                         doc=("ROIs designated using a mask of size [width, height] "
+                                                              "(2D recording) or [width, height, depth] (3D recording),"
+                                                              " where for a given pixel a value of 1 indicates belonging"
+                                                              " to the ROI. The depth value may represent to which"
+                                                              " plane the roi belonged to"),
+                                                            quantity='*',
+                                                            dims=(('x', 'y'), ('x', 'y', 'z')),
+                                                            shape=([None] * 2, [None] * 3)),
+                                          NWBDatasetSpec(name='center_rois',
+                                                         doc=("ROIs designated as a list specifying the pixel and radio"
+                                                              "([x1, y1, r1], or voxel ([x1, y1, z1, r1]) "
+                                                              " of each ROI, where the items in the list are the "
+                                                              " coordinates of the center of the ROI and the size of "
+                                                              " the Roi given in radio size. The depth value may "
+                                                              " represent to which plane the roi belonged to"),
+                                                         quantity='*',
+                                                         dims=(('number_rois', '3'), ('number_rois', '4')),
+                                                         shape=([None] * 2, [None] * 3)),
+                                          NWBDatasetSpec(name='pixel_rois',
+                                                         doc=("ROIs designated as a list specifying all the pixels"
+                                                              "([x1, y1], or voxel ([x1, y1, z1]) of each ROI, where"
+                                                              " the items in the list are each of the pixels belonging"
+                                                              " to the roi"),
+                                                         quantity='*',
+                                                         dims=(('number_rois', 'number_pixels', '2'),
+                                                               ('number_rois', 'number_pixels', '3')),
+                                                         shape=([None] * 2, [None] * 3))],
+                                attributes=[NWBAttributeSpec(name='description', doc='describe the metadata',
+                                                             dtype='text', required=True),
+                                            NWBAttributeSpec(name='category', doc='free category field', dtype='text',
+                                                             required=False),
+                                            NWBAttributeSpec(name='help', doc='help', dtype='text',
+                                                             value='stores whatev data')])
 
-    # TODO: add all of your new data types to this list
-    new_data_types = [Calibration_metadata, BMI_parameters, CaBMI_series]
+
+    #TODO check timeseries vs NWBDataInterface
+
+    new_data_types = [Calibration_metadata, BMI_parameters, CaBMI_series, ROI_metadata]
 
     # export the spec to yaml files in the spec folder
     output_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "spec"))
