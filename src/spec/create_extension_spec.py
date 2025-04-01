@@ -4,6 +4,7 @@ import os.path
 from pynwb.spec import NWBNamespaceBuilder, export_spec, NWBGroupSpec, NWBAttributeSpec, NWBDatasetSpec
 
 # TODO: import other spec classes as needed
+# TODO: required always!
 # from pynwb.spec import NWBDatasetSpec, NWBLinkSpec, NWBDtypeSpec, NWBRefSpec
 
 
@@ -37,10 +38,9 @@ def main():
                                         doc='Metadata result of the calibration and needed for the BMI', quantity='*')
     Calibration_metadata.add_attribute(name='description', doc='describe the metadata', dtype='text', required=True)
     Calibration_metadata.add_attribute(name='category', doc='free category field', dtype='text', required=False)
-    Calibration_metadata.add_attribute(name='help', doc='help', dtype='text', value='stores whatev data')
+    Calibration_metadata.add_attribute(name='help', doc='help', dtype='text', value='stores whatev data', required=False)
     Calibration_metadata.add_dataset(name='ensemble_indexes', doc='indexes of the neurons used as part of the ensemble',
-                                     dtype='int32', dims=['number of ensemble neurons'],
-                                     required=True)
+                                     dtype='int32', dims=['number of ensemble neurons'], required=True)
     Calibration_metadata.add_dataset(name='decoder', doc='multiplier to each of the ensemble neurons', dtype='float64',
                                      dims=['number of ensemble neurons'], required=True)
     Calibration_metadata.add_dataset(name='target', doc='Threshold for the cursor, can be one or two per dimension'
@@ -218,7 +218,7 @@ def main():
                                                               " plane the roi belonged to"),
                                                             quantity='*',
                                                             dims=(('x', 'y'), ('x', 'y', 'z')),
-                                                            shape=([None] * 2, [None] * 3)),
+                                                            shape=([None] * 2, [None] * 3), required=False),
                                           NWBDatasetSpec(name='center_rois',
                                                          doc=("ROIs designated as a list specifying the pixel and radio"
                                                               "([x1, y1, r1], or voxel ([x1, y1, z1, r1]) "
@@ -228,7 +228,7 @@ def main():
                                                               " represent to which plane the roi belonged to"),
                                                          quantity='*',
                                                          dims=(('number_rois', '3'), ('number_rois', '4')),
-                                                         shape=([None] * 2, [None] * 3)),
+                                                         shape=([None] * 2, [None] * 3), required=False),
                                           NWBDatasetSpec(name='pixel_rois',
                                                          doc=("ROIs designated as a list specifying all the pixels"
                                                               "([x1, y1], or voxel ([x1, y1, z1]) of each ROI, where"
@@ -237,13 +237,13 @@ def main():
                                                          quantity='*',
                                                          dims=(('number_rois', 'number_pixels', '2'),
                                                                ('number_rois', 'number_pixels', '3')),
-                                                         shape=([None] * 2, [None] * 3))],
+                                                         shape=([None] * 2, [None] * 3), required=False)],
                                 attributes=[NWBAttributeSpec(name='description', doc='describe the metadata',
                                                              dtype='text', required=True),
                                             NWBAttributeSpec(name='category', doc='free category field', dtype='text',
                                                              required=False),
                                             NWBAttributeSpec(name='help', doc='help', dtype='text',
-                                                             value='stores whatev data')])
+                                                             value='stores whatev data', required=False)])
 
 
     #TODO check timeseries vs NWBDataInterface
