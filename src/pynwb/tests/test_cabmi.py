@@ -7,22 +7,19 @@ import numpy as np
 
 from pynwb import NWBHDF5IO, NWBFile
 from pynwb.testing.mock.device import mock_Device
-from pynwb.testing.mock.ecephys import mock_ElectrodeGroup, mock_ElectrodeTable
+from pynwb.testing.mock.file import mock_NWBFile
+from pynwb.testing.mock.ophys import mock_RoiResponseSeries
 from pynwb.testing.mock.file import mock_NWBFile
 from pynwb.testing import TestCase, remove_test_file, NWBH5IOFlexMixin
 
-from ndx_cabmi import TetrodeSeries
+from ndx_cabmi import Calibration_metadata, BMI_parameters, CaBMI_series, ROI_metadata
 
 
-def set_up_nwbfile(nwbfile: NWBFile = None):
-    """Create an NWBFile with a Device, ElectrodeGroup, and 10 electrodes in the ElectrodeTable."""
-    nwbfile = nwbfile or mock_NWBFile()
-    device = mock_Device(nwbfile=nwbfile)
-    electrode_group = mock_ElectrodeGroup(device=device, nwbfile=nwbfile)
-    _ = mock_ElectrodeTable(n_rows=10, group=electrode_group, nwbfile=nwbfile)
-
+def set_up_nwbfile():
+    """Create an NWBFile with imaging data"""
+    nwbfile = mock_NWBFile()
+    mock_RoiResponseSeries(nwbfile=nwbfile)
     return nwbfile
-
 
 class TestTetrodeSeriesConstructor(TestCase):
     """Simple unit test for creating a TetrodeSeries."""

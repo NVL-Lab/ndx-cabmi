@@ -17,12 +17,13 @@ load_namespaces(str(__spec_path))
 # Either have PyNWB generate a class from the spec using `get_class` as shown
 # below or write a custom class and register it using the class decorator
 # `@register_class("TetrodeSeries", "ndx-cabmi")`
-TetrodeSeries = get_class("TetrodeSeries", "ndx-cabmi")
+Calibration_metadata = get_class("Calibration_metadata", "ndx-cabmi")
+BMI_parameters = get_class("BMI_parameters", "ndx-cabmi")
+CaBMI_series = get_class("CaBMI_series", "ndx-cabmi")
+ROI_metadata = get_class("ROI_metadata", "ndx-cabmi")
 
 # TODO: Add all classes to __all__ to make them accessible at the package level
-__all__ = [
-    "TetrodeSeries",
-]
+__all__ = ["Calibration_metadata", "BMI_parameters", "CaBMI_series", "ROI_metadata"]
 
 # Remove these functions/modules from the package
 del load_namespaces, get_class, files, os, __location_of_this_file, __spec_path
