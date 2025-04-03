@@ -1,8 +1,374 @@
 groups:
-- neurodata_type_def: TetrodeSeries
-  neurodata_type_inc: ElectricalSeries
-  doc: An extension of ElectricalSeries to include the tetrode ID for each time series.
+- neurodata_type_def: Calibration_metadata
+  neurodata_type_inc: NWBContainer
+  doc: Metadata result of the calibration and needed for the BMI
+  quantity: '?'
   attributes:
-  - name: trode_id
+  - name: description
+    dtype: text
+    doc: describe the metadata
+  - name: category
+    dtype: text
+    doc: free category field
+    required: false
+  - name: help
+    dtype: text
+    value: stores whatev data
+    doc: help
+  - name: feedback_flag
+    dtype: bool
+    doc: if there is auditory tone as feedback or not
+  datasets:
+  - name: ensemble_indexes
     dtype: int32
-    doc: The tetrode ID.
+    dims:
+    - number of ensemble neurons
+    shape:
+    - null
+    doc: indexes of the neurons used as part of the ensemble
+  - name: decoder
+    dtype: float64
+    dims:
+    - number of ensemble neurons
+    shape:
+    - null
+    doc: multiplier to each of the ensemble neurons
+  - name: target
+    dtype: float64
+    dims:
+    - number of targets
+    shape:
+    - null
+    doc: Threshold for the cursor, can be one or two per dimension of the cursor
+  - name: feedback_target
+    dtype: float64
+    dims:
+    - number of audio targets
+    shape:
+    - null
+    doc: if there is auditory tone as feedback, value in Hz for the auditory tone
+      for each of the targets, can be one or two per dimension of the cursor
+  - name: ensemble_mean
+    dtype: float64
+    dims:
+    - number of ensemble neurons
+    shape:
+    - null
+    doc: mean of the activity of each of the ensemble neurons during calibration
+  - name: ensemble_sd
+    dtype: float64
+    dims:
+    - number of ensemble neurons
+    shape:
+    - null
+    doc: standard deviation of the activity of each of the ensemble neurons during
+      calibration
+- neurodata_type_def: Parameters_BMI
+  neurodata_type_inc: NWBContainer
+  doc: parameters required for running calibration and BMI
+  quantity: '?'
+  attributes:
+  - name: description
+    dtype: text
+    doc: describe the BMI_parameters
+  - name: category
+    dtype: text
+    doc: free category field
+    required: false
+  - name: help
+    dtype: text
+    value: stores whatevs data
+    doc: help
+  - name: back_to_baseline_frames
+    dtype: int32
+    doc: Required number of frames for the cursor to be over the back_to_baseline_threshold
+      for it to be considered back to baseline
+    required: false
+  - name: prefix_window_frames
+    dtype: int32
+    doc: number microscopy frames to ignore at start of bmi acquisition
+    required: false
+  - name: dff_baseline_window_frames
+    dtype: int32
+    doc: Period at the beginning of the BMI without calculating cursor to establish
+      the dff baseline of the ensemble activity
+    required: false
+  - name: smooth_window_frames
+    dtype: int32
+    doc: number of frames to use for smoothing dff and avoidmotion artifacts to affect
+      the cursor
+    required: false
+  - name: cursor_zscore_bool
+    dtype: bool
+    doc: if 1, neural activity is zscored before going into cursor calculation. if
+      0, activity is not zscored
+    required: false
+  - name: relaxation_window_frames
+    dtype: int32
+    doc: number of frames after a hit to stop the BMI
+    required: false
+  - name: timelimit_frames
+    dtype: int32
+    doc: time limit in frames that the animal has to finish a given trial
+    required: false
+  - name: timeout_window_frames
+    dtype: int32
+    doc: if there is a time limit for a trial, the number of frames after a miss to
+      stop the BMI as a punishment
+    required: false
+  datasets:
+  - name: back_to_baseline_threshold
+    dtype: float64
+    dims:
+    - number of targets
+    shape:
+    - null
+    doc: Required value of the cursor to start a new trial after going back to baseline
+  - name: conditions_target
+    dtype: float64
+    dims:
+    - number of conditions
+    shape:
+    - null
+    doc: value of each of the conditions to be met by the cursor for it to be considered
+      hitting a target
+  - name: seconds_per_reward_range
+    dtype: int32
+    dims:
+    - lower_value|higher_value
+    shape:
+    - 2
+    doc: A range on how many frames should elapse before a reward is expected.
+- neurodata_type_def: CaBMISeries
+  neurodata_type_inc: NWBContainer
+  doc: Data collected while performing a CaBMI experiment
+  quantity: '?'
+  attributes:
+  - name: help
+    dtype: text
+    value: stores information
+    doc: help doc
+  - name: self_hit_counter
+    dtype: int32
+    doc: counter of the amount of self-hits achieved
+    required: false
+  - name: stim_hit_counter
+    dtype: int32
+    doc: counter of the amount of stim-hits achieved
+    required: false
+  - name: self_reward_counter
+    dtype: int32
+    doc: counter of the amount of self-rewards obtained
+    required: false
+  - name: stim_reward_counter
+    dtype: int32
+    doc: counter of the amount of stim-rewards achieved
+    required: false
+  - name: scheduled_stim_counter
+    dtype: int32
+    doc: counter of the amount of scheduled stims that were ultimately given (some
+      scheduled stims may bemissing if the bmi was busy with something elseor the
+      animal was not on a trial)
+    required: false
+  - name: scheduled_reward_counter
+    dtype: int32
+    doc: counter of the amount of scheduled rewards that were ultimately given (some
+      scheduled rewards may bemissing if the bmi was busy with something elseor the
+      animal was not on a trial)
+    required: false
+  - name: trial_counter
+    dtype: int32
+    doc: counter of the amount of trials started. This valuemay differ from the amount
+      of hits achieved if thelast trial was not finished
+    required: false
+  - name: number of hits
+    dtype: int32
+    doc: If the experiments has a timelimit for trials, theamount of trials that ended
+      in a hit (achieved atarget)
+    required: false
+  - name: number of misses
+    dtype: int32
+    doc: If the experiments has a timelimit for trials, theamount of trials that ended
+      in a miss (did not achieve the target)
+    required: false
+  - name: last_frame
+    dtype: int32
+    doc: number of the last frame being processed
+    required: false
+  datasets:
+  - name: target
+    dtype: float64
+    dims:
+    - number of targets
+    shape:
+    - null
+    doc: targets at which the cursor would end up in a *hit*
+  - name: cursor
+    dtype: float64
+    dims:
+    - degrees_freedom, BMI_frames
+    shape:
+    - null
+    doc: values of the cursor obtained from decoding neural data
+  - name: cursor_audio
+    dtype: int32
+    dims:
+    - degrees_freedom, BMI_frames
+    shape:
+    - null
+    doc: values of the audio cursor obtained from mapping the neural cursor (obtained
+      by decodind the neural data ofensemble neurons) to an auditory tone
+  - name: raw_activity
+    dtype: float64
+    dims:
+    - number_ensemble_neurons
+    - BMI_frames
+    shape:
+    - null
+    - null
+    doc: Raw activity of the ensemble neurons
+  - name: baseline_vector
+    dtype: float64
+    dims:
+    - number_ensemble_neurons
+    - BMI_frames
+    shape:
+    - null
+    - null
+    doc: Baseline of the fluorescence for each of the ensemble neurons. Used to reliable
+      calculate the dff of the ensemble neurons. Updated overtime
+  - name: self_hits
+    dtype: bool
+    dims:
+    - BMI_frames
+    shape:
+    - null
+    doc: Boolean array with 1 when a hit was achieved due to thenormal (during BMI)
+      activity of ensemble neurons
+  - name: stim_hits
+    dtype: bool
+    dims:
+    - BMI_frames
+    shape:
+    - null
+    doc: Boolean array with 1 when a hit was achieved due tomanipulations to the circuit
+  - name: self_reward
+    dtype: bool
+    dims:
+    - BMI_frames
+    shape:
+    - null
+    doc: Boolean array with 1 when a reward was given after a selfhit was achieved
+  - name: stim_reward
+    dtype: bool
+    dims:
+    - BMI_frames
+    shape:
+    - null
+    doc: Boolean array with 1 when a reward was given after a stimhit was achieved
+  - name: stim_delivery
+    dtype: bool
+    dims:
+    - BMI_frames
+    shape:
+    - null
+    doc: Boolean array with 1 when a stim was performed
+  - name: trial_start
+    dtype: bool
+    dims:
+    - BMI_frames
+    shape:
+    - null
+    doc: Boolean array with 1 when a new trial started
+  - name: time_vector
+    dtype: float64
+    dims:
+    - BMI_frames
+    shape:
+    - null
+    doc: time it took to complete a frame in ms
+  - name: scheduled_stim
+    dtype: int32
+    dims:
+    - number_stims
+    shape:
+    - null
+    doc: Indices of the frames that had been selected beforethe experiment starts
+      to have a stim. For random stimcontrol purposes or holographic pretrains
+  - name: scheduled_reward
+    dtype: int32
+    dims:
+    - number_rewards
+    shape:
+    - null
+    doc: Indices of the frames that had been selected beforethe experiment starts
+      to have a reward. For random reward control purposes or other experiments
+- neurodata_type_def: ROI_metadata
+  neurodata_type_inc: NWBContainer
+  doc: Information of the rois used during the experiment
+  attributes:
+  - name: description
+    dtype: text
+    doc: describe the metadata
+  - name: category
+    dtype: text
+    doc: free category field
+    required: false
+  - name: help
+    dtype: text
+    value: stores whatev data
+    doc: help
+  datasets:
+  - name: image_mask_roi
+    dims:
+    - - x
+      - y
+    - - x
+      - y
+      - z
+    shape:
+    - - null
+      - null
+    - - null
+      - null
+      - null
+    doc: ROIs designated using a mask of size [width, height] (2D recording) or [width,
+      height, depth] (3D recording), where for a given pixel a value of 1 indicates
+      belonging to the ROI. The depth value may represent to which plane the roi belonged
+      to
+    quantity: '?'
+  - name: center_rois
+    dims:
+    - - number_rois
+      - '3'
+    - - number_rois
+      - '4'
+    shape:
+    - - null
+      - null
+    - - null
+      - null
+      - null
+    doc: ROIs designated as a list specifying the pixel and radio([x1, y1, r1], or
+      voxel ([x1, y1, z1, r1])  of each ROI, where the items in the list are the  coordinates
+      of the center of the ROI and the size of  the Roi given in radio size. The depth
+      value may  represent to which plane the roi belonged to
+    quantity: '?'
+  - name: pixel_rois
+    dims:
+    - - number_rois
+      - number_pixels
+      - '2'
+    - - number_rois
+      - number_pixels
+      - '3'
+    shape:
+    - - null
+      - null
+    - - null
+      - null
+      - null
+    doc: ROIs designated as a list specifying all the pixels([x1, y1], or voxel ([x1,
+      y1, z1]) of each ROI, where the items in the list are each of the pixels belonging
+      to the roi
+    quantity: '?'
