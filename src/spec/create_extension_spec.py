@@ -56,8 +56,8 @@ def main():
                                                                      dtype='text', required=True),
                                                     NWBAttributeSpec(name='category', doc='free category field',
                                                                      dtype='text', required=False),
-                                                    NWBAttributeSpec(name='help', doc='help', dtype='text',
-                                                                     value='stores whatev data', required=False),
+                                                    NWBAttributeSpec(name='help', doc='help', dtype='text', 
+                                                                    required=False),
                                                     NWBAttributeSpec(name='feedback_flag',
                                                                      doc='if there is auditory tone as feedback or not',
                                                                      dtype='bool', required=True)])
@@ -83,7 +83,7 @@ def main():
                                               NWBAttributeSpec(name='category', doc='free category field', dtype='text',
                                                                required=False),
                                               NWBAttributeSpec(name='help', doc='help', dtype='text',
-                                                               value='stores whatevs data', required=False),
+                                                               required=False),
                                               NWBAttributeSpec(name='back_to_baseline_frames',
                                                                doc='Required number of frames for the cursor to be '
                                                                    'over the back_to_baseline_threshold for it to be'
@@ -178,7 +178,7 @@ def main():
                                                          dtype='int32', dims=['number_rewards']),
                                           ],
                                 attributes=[NWBAttributeSpec(name='help', doc='help doc', dtype='text',
-                                                             value='stores information', required=False),
+                                                             required=False),
                                             NWBAttributeSpec(name='self_hit_counter', doc='counter of the amount of '
                                                                                           'self-hits achieved',
                                                              dtype='int32', required=False),
@@ -257,7 +257,7 @@ def main():
                                             NWBAttributeSpec(name='category', doc='free category field', dtype='text',
                                                              required=False),
                                             NWBAttributeSpec(name='help', doc='help', dtype='text',
-                                                             value='stores whatev data', required=False)])
+                                                             required=False)])
 
     new_data_types = [Calibration_metadata, BMI_parameters, CaBMI_series, ROI_metadata]
 

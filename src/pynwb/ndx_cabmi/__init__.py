@@ -18,12 +18,12 @@ load_namespaces(str(__spec_path))
 # below or write a custom class and register it using the class decorator
 # `@register_class("TetrodeSeries", "ndx-cabmi")`
 Calibration_metadata = get_class("Calibration_metadata", "ndx-cabmi")
-BMI_parameters = get_class("BMI_parameters", "ndx-cabmi")
-CaBMI_series = get_class("CaBMI_series", "ndx-cabmi")
+Parameters_BMI = get_class("Parameters_BMI", "ndx-cabmi")
+CaBMISeries = get_class("CaBMISeries", "ndx-cabmi")
 ROI_metadata = get_class("ROI_metadata", "ndx-cabmi")
 
 # TODO: Add all classes to __all__ to make them accessible at the package level
-__all__ = ["Calibration_metadata", "BMI_parameters", "CaBMI_series", "ROI_metadata"]
+__all__ = ["Calibration_metadata", "Parameters_BMI", "CaBMISeries", "ROI_metadata"]
 
 # Remove these functions/modules from the package
 del load_namespaces, get_class, files, os, __location_of_this_file, __spec_path

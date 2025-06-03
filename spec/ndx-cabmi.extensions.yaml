@@ -13,8 +13,8 @@ groups:
     required: false
   - name: help
     dtype: text
-    value: stores whatev data
     doc: help
+    required: false
   - name: feedback_flag
     dtype: bool
     doc: if there is auditory tone as feedback or not
@@ -77,8 +77,8 @@ groups:
     required: false
   - name: help
     dtype: text
-    value: stores whatevs data
     doc: help
+    required: false
   - name: back_to_baseline_frames
     dtype: int32
     doc: Required number of frames for the cursor to be over the back_to_baseline_threshold
@@ -146,8 +146,8 @@ groups:
   attributes:
   - name: help
     dtype: text
-    value: stores information
     doc: help doc
+    required: false
   - name: self_hit_counter
     dtype: int32
     doc: counter of the amount of self-hits achieved
@@ -316,8 +316,8 @@ groups:
     required: false
   - name: help
     dtype: text
-    value: stores whatev data
     doc: help
+    required: false
   datasets:
   - name: image_mask_roi
     dims:
