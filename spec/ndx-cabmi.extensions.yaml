@@ -1,6 +1,6 @@
 groups:
 - neurodata_type_def: Calibration_metadata
-  neurodata_type_inc: NWBContainer
+  neurodata_type_inc: LabMetaData
   doc: Metadata result of the calibration and needed for the BMI
   quantity: '?'
   attributes:
@@ -11,9 +11,9 @@ groups:
     dtype: text
     doc: free category field
     required: false
-  - name: help
+  - name: about
     dtype: text
-    doc: help
+    doc: about
     required: false
   - name: feedback_flag
     dtype: bool
@@ -64,7 +64,7 @@ groups:
     doc: standard deviation of the activity of each of the ensemble neurons during
       calibration
 - neurodata_type_def: Parameters_BMI
-  neurodata_type_inc: NWBContainer
+  neurodata_type_inc: LabMetaData
   doc: parameters required for running calibration and BMI
   quantity: '?'
   attributes:
@@ -75,9 +75,9 @@ groups:
     dtype: text
     doc: free category field
     required: false
-  - name: help
+  - name: about
     dtype: text
-    doc: help
+    doc: about
     required: false
   - name: back_to_baseline_frames
     dtype: int32
@@ -140,13 +140,13 @@ groups:
     - 2
     doc: A range on how many frames should elapse before a reward is expected.
 - neurodata_type_def: CaBMISeries
-  neurodata_type_inc: NWBContainer
+  neurodata_type_inc: NWBDataInterface
   doc: Data collected while performing a CaBMI experiment
   quantity: '?'
   attributes:
-  - name: help
+  - name: about
     dtype: text
-    doc: help doc
+    doc: about doc
     required: false
   - name: self_hit_counter
     dtype: int32
@@ -181,12 +181,12 @@ groups:
     doc: counter of the amount of trials started. This valuemay differ from the amount
       of hits achieved if thelast trial was not finished
     required: false
-  - name: number of hits
+  - name: number_of_hits
     dtype: int32
     doc: If the experiments has a timelimit for trials, theamount of trials that ended
       in a hit (achieved atarget)
     required: false
-  - name: number of misses
+  - name: number_of_misses
     dtype: int32
     doc: If the experiments has a timelimit for trials, theamount of trials that ended
       in a miss (did not achieve the target)
@@ -304,7 +304,7 @@ groups:
     doc: Indices of the frames that had been selected beforethe experiment starts
       to have a reward. For random reward control purposes or other experiments
 - neurodata_type_def: ROI_metadata
-  neurodata_type_inc: NWBContainer
+  neurodata_type_inc: NWBDataInterface
   doc: Information of the rois used during the experiment
   attributes:
   - name: description
@@ -314,9 +314,9 @@ groups:
     dtype: text
     doc: free category field
     required: false
-  - name: help
+  - name: about
     dtype: text
-    doc: help
+    doc: about
     required: false
   datasets:
   - name: image_mask_roi
@@ -346,7 +346,9 @@ groups:
     shape:
     - - null
       - null
+      - null
     - - null
+      - null
       - null
       - null
     doc: ROIs designated as a list specifying the pixel and radio([x1, y1, r1], or
