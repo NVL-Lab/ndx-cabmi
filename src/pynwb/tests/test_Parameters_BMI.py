@@ -1,12 +1,11 @@
 from ndx_cabmi import Parameters_BMI
 
-import numpy as np
 from datetime import datetime
 from pynwb import NWBHDF5IO
 
 from pynwb.testing import TestCase, remove_test_file
 from pynwb.testing.mock.file import mock_NWBFile
-from datetime import datetime
+
 
 
 class TestParametersBMIConstructor(TestCase):

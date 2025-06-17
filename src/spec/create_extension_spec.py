@@ -118,8 +118,8 @@ def main():
                                                                required=False),
                                               # CaBMI may not have time limits for trials
                                               NWBAttributeSpec(name='timeout_window_frames',
-                                                               doc='if there is a time limit for a trial, the number of'
-                                                                   ' frames after a miss to stop the BMI as a '
+                                                               doc='if there is a time limit for a trial, the number '
+                                                                   'of frames after a miss to stop the BMI as a '
                                                                    'punishment', dtype='int32', required=False)])
 
     # cursor group

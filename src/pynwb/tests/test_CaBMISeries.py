@@ -7,7 +7,7 @@ from pynwb import NWBHDF5IO
 
 from pynwb.testing import TestCase, remove_test_file
 from pynwb.testing.mock.file import mock_NWBFile
-from datetime import datetime
+
 
 
 class TestCaBMISeriesConstructor(TestCase):
