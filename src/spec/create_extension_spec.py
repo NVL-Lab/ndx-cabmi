@@ -21,11 +21,14 @@ def main():
         ],
     )
     ns_builder.include_namespace("core")
-    ns_builder.include_type('TimeSeries', namespace='core')
+    ns_builder.include_type('NWBDataInterface', namespace='core')
+    ns_builder.include_type('LabMetaData', namespace='core')
+    ns_builder.include_type('NWBContainer', namespace='core')
+    ns_builder.include_type('DynamicTable', namespace='core')
 
     # Calibration metadata group
     Calibration_metadata = NWBGroupSpec(neurodata_type_def='Calibration_metadata',
-                                        neurodata_type_inc='NWBContainer',
+                                        neurodata_type_inc='LabMetaData',
                                         doc='Metadata result of the calibration and needed for the BMI', quantity='?',
                                         datasets=[NWBDatasetSpec(name='ensemble_indexes',
                                                                  doc='indexes of the neurons used as part of the '
@@ -56,15 +59,15 @@ def main():
                                                                      dtype='text', required=True),
                                                     NWBAttributeSpec(name='category', doc='free category field',
                                                                      dtype='text', required=False),
-                                                    NWBAttributeSpec(name='help', doc='help', dtype='text',
-                                                                     value='stores whatev data', required=False),
+                                                    NWBAttributeSpec(name='about', doc='about', dtype='text', 
+                                                                    required=False),
                                                     NWBAttributeSpec(name='feedback_flag',
                                                                      doc='if there is auditory tone as feedback or not',
                                                                      dtype='bool', required=True)])
 
     # BMI parameters group
     BMI_parameters = NWBGroupSpec(neurodata_type_def='Parameters_BMI',
-                                  neurodata_type_inc='NWBContainer',
+                                  neurodata_type_inc='LabMetaData',
                                   doc='parameters required for running calibration and BMI', quantity='?',
                                   datasets=[NWBDatasetSpec(name='back_to_baseline_threshold',
                                                            doc='Required value of the cursor to start a new trial '
@@ -82,8 +85,8 @@ def main():
                                                                dtype='text', required=True),
                                               NWBAttributeSpec(name='category', doc='free category field', dtype='text',
                                                                required=False),
-                                              NWBAttributeSpec(name='help', doc='help', dtype='text',
-                                                               value='stores whatevs data', required=False),
+                                              NWBAttributeSpec(name='about', doc='about', dtype='text',
+                                                               required=False),
                                               NWBAttributeSpec(name='back_to_baseline_frames',
                                                                doc='Required number of frames for the cursor to be '
                                                                    'over the back_to_baseline_threshold for it to be'
@@ -115,12 +118,12 @@ def main():
                                                                required=False),
                                               # CaBMI may not have time limits for trials
                                               NWBAttributeSpec(name='timeout_window_frames',
-                                                               doc='if there is a time limit for a trial, the number of'
-                                                                   ' frames after a miss to stop the BMI as a '
+                                                               doc='if there is a time limit for a trial, the number '
+                                                                   'of frames after a miss to stop the BMI as a '
                                                                    'punishment', dtype='int32', required=False)])
 
     # cursor group
-    CaBMI_series = NWBGroupSpec(neurodata_type_def="CaBMISeries", neurodata_type_inc="NWBContainer",
+    CaBMI_series = NWBGroupSpec(neurodata_type_def="CaBMISeries", neurodata_type_inc="NWBDataInterface",
                                 doc="Data collected while performing a CaBMI experiment", quantity='?',
                                 datasets=[NWBDatasetSpec(name='target',
                                                          doc='targets at which the cursor would end up in a *hit*',
@@ -177,8 +180,8 @@ def main():
                                                              'reward control purposes or other experiments',
                                                          dtype='int32', dims=['number_rewards']),
                                           ],
-                                attributes=[NWBAttributeSpec(name='help', doc='help doc', dtype='text',
-                                                             value='stores information', required=False),
+                                attributes=[NWBAttributeSpec(name='about', doc='about doc', dtype='text',
+                                                             required=False),
                                             NWBAttributeSpec(name='self_hit_counter', doc='counter of the amount of '
                                                                                           'self-hits achieved',
                                                              dtype='int32', required=False),
@@ -208,12 +211,12 @@ def main():
                                                                  'may differ from the amount of hits achieved if the'
                                                                  'last trial was not finished',
                                                              dtype='int32', required=False),
-                                            NWBAttributeSpec(name='number of hits',
+                                            NWBAttributeSpec(name='number_of_hits',
                                                              doc='If the experiments has a timelimit for trials, the'
                                                                  'amount of trials that ended in a hit (achieved a'
                                                                  'target)',
                                                              dtype='int32', required=False),
-                                            NWBAttributeSpec(name='number of misses',
+                                            NWBAttributeSpec(name='number_of_misses',
                                                              doc='If the experiments has a timelimit for trials, the'
                                                                  'amount of trials that ended in a miss (did not '
                                                                  'achieve the target)',
@@ -222,14 +225,16 @@ def main():
                                                              doc='number of the last frame being processed',
                                                              dtype='int32', required=False)])
 
-    ROI_metadata = NWBGroupSpec(neurodata_type_def='ROI_metadata', neurodata_type_inc='NWBContainer',
+    ROI_metadata = NWBGroupSpec(neurodata_type_def='ROI_metadata', neurodata_type_inc='NWBDataInterface' \
+    '' \
+    '',
                                 doc='Information of the rois used during the experiment',
                                 datasets=[NWBDatasetSpec(name='image_mask_roi',
                                                          doc=("ROIs designated using a mask of size [width, height] "
                                                               "(2D recording) or [width, height, depth] (3D recording),"
-                                                              " where for a given pixel a value of 1 indicates belonging"
-                                                              " to the ROI. The depth value may represent to which"
-                                                              " plane the roi belonged to"),
+                                                              " where for a given pixel a value of 1 indicates "
+                                                              " belonging to the ROI. The depth value may represent "
+                                                              "to which plane the roi belonged to"),
                                                          quantity='?',
                                                          dims=(('x', 'y'), ('x', 'y', 'z')),
                                                          shape=([None] * 2, [None] * 3)),
@@ -242,7 +247,7 @@ def main():
                                                               " represent to which plane the roi belonged to"),
                                                          quantity='?',
                                                          dims=(('number_rois', '3'), ('number_rois', '4')),
-                                                         shape=([None] * 2, [None] * 3)),
+                                                         shape=([None] * 3, [None] * 4)),
                                           NWBDatasetSpec(name='pixel_rois',
                                                          doc=("ROIs designated as a list specifying all the pixels"
                                                               "([x1, y1], or voxel ([x1, y1, z1]) of each ROI, where"
@@ -256,8 +261,8 @@ def main():
                                                              dtype='text', required=True),
                                             NWBAttributeSpec(name='category', doc='free category field', dtype='text',
                                                              required=False),
-                                            NWBAttributeSpec(name='help', doc='help', dtype='text',
-                                                             value='stores whatev data', required=False)])
+                                            NWBAttributeSpec(name='about', doc='about', dtype='text',
+                                                             required=False)])
 
     new_data_types = [Calibration_metadata, BMI_parameters, CaBMI_series, ROI_metadata]
 
