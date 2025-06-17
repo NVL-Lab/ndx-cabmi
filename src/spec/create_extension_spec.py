@@ -232,9 +232,9 @@ def main():
                                 datasets=[NWBDatasetSpec(name='image_mask_roi',
                                                          doc=("ROIs designated using a mask of size [width, height] "
                                                               "(2D recording) or [width, height, depth] (3D recording),"
-                                                              " where for a given pixel a value of 1 indicates belonging"
-                                                              " to the ROI. The depth value may represent to which"
-                                                              " plane the roi belonged to"),
+                                                              " where for a given pixel a value of 1 indicates "
+                                                              " belonging to the ROI. The depth value may represent "
+                                                              "to which plane the roi belonged to"),
                                                          quantity='?',
                                                          dims=(('x', 'y'), ('x', 'y', 'z')),
                                                          shape=([None] * 2, [None] * 3)),
