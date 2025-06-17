@@ -1,9 +1,10 @@
 from importlib.resources import files
 import os
+from pathlib import Path
 from pynwb import load_namespaces, get_class
 
 # Get path to the namespace.yaml file with the expected location when installed not in editable mode
-__location_of_this_file = files(__name__)
+__location_of_this_file = Path(files(__name__))
 __spec_path = __location_of_this_file / "spec" / "ndx-cabmi.namespace.yaml"
 
 # If that path does not exist, we are likely running in editable mode. Use the local path instead
