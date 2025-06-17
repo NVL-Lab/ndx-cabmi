@@ -1,15 +1,12 @@
 from ndx_cabmi import ROI_metadata
 
-import tempfile
 import numpy as np
 from datetime import datetime
 from pynwb import NWBHDF5IO
 
 from pynwb.testing import TestCase, remove_test_file
-from pynwb.testing import TestCase
 from pynwb.testing.mock.file import mock_NWBFile
 from datetime import datetime
-import unittest
 
 class TestROIMetadataConstructor(TestCase):
     #Unit test for constructing parameters Metadata
@@ -38,11 +35,15 @@ class TestROIMetadataConstructor(TestCase):
         np.testing.assert_array_equal(roi.pixel_rois, np.ones((4, 5, 6)))
 
 
-class TestROIMetadataRoundtrip(unittest.TestCase):
+class TestROIMetadataRoundtrip(TestCase):
     #Roundtrip test for Calibration Metadata
     def setUp(self):
         self.nwbfile = mock_NWBFile(session_start_time=datetime.now().astimezone())
-    
+        self.path = "test_roi_metadata.nwb"
+
+    def tearDown(self):
+        remove_test_file(self.path)
+
     def test_roundtrip(self):
         roi = ROI_metadata(
             name = "test_ROI_metadata",
@@ -57,20 +58,12 @@ class TestROIMetadataRoundtrip(unittest.TestCase):
         self.nwbfile.add_acquisition(roi)
 
         # Write to temporary file
-        with tempfile.NamedTemporaryFile(suffix='.nwb', delete=True) as tmp:
-            with NWBHDF5IO(tmp.name, mode='w') as io:
-                io.write(self.nwbfile)
 
-        
-            with NWBHDF5IO(tmp.name, mode='r', load_namespaces=True) as io:
-                read_nwbfile = io.read()
-                print("\n=== LabMetaData Contents ===")
-                for name, meta in read_nwbfile.acquisition.items():
-                    
-                    print(f"ROIs Name: {name}")
-                    print(f"Description: {meta.description}")
-                    print(f"Category: {meta.category}")
-                    print(f"About: {meta.about}")
-                    print(f"Image mask ROIs: {meta.image_mask_roi}")
-                    print(f"Center ROIs: {meta.center_rois}\n")
-                    print(f"Pixel ROIs: {meta.pixel_rois}")
+        with NWBHDF5IO(self.path, mode='w') as io:
+            io.write(self.nwbfile)
+
+    
+        with NWBHDF5IO(self.path, mode='r', load_namespaces=True) as io:
+            read_nwbfile = io.read()
+            read_roi = read_nwbfile.acquisition["test_ROI_metadata"]
+            self.assertContainerEqual(roi, read_roi)
