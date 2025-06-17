@@ -2,11 +2,15 @@
 # Configuration file for generating sources for the format documentation from the YAML specification files
 
 import os
+from importlib.resources import files
+from pathlib import Path
 
 # -- Input options for the specification files to be used -----------------------
 
 # Directory where the YAML files for the namespace to be documented are located
-spec_input_spec_dir = '..\spec'
+#spec_input_spec_dir = '..\spec'
+__location_of_this_file = Path(files(__name__))
+spec_input_spec_dir = __location_of_this_file.parent.parent / "spec" / "ndx-cabmi.namespace.yaml"
 
 # Name of the YAML file with the specification of the Namespace to be documented
 spec_input_namespace_filename = 'ndx-cabmi.namespace.yaml'
