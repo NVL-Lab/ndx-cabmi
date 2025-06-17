@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # Configuration file for generating sources for the format documentation from the YAML specification files
 
-import os
-
 # -- Input options for the specification files to be used -----------------------
 
 import os
