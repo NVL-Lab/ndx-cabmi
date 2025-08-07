@@ -20,9 +20,9 @@ class TestROIMetadataConstructor(TestCase):
             description='ROI metadata for my experiment',
             category='test category',
             about='test about',
-            image_mask_roi=np.ones((5, 512, 512)),
-            center_rois=np.ones((4, 5, 6, 7)),
-            pixel_rois=np.ones((4, 5, 6))
+            image_mask_roi=np.ones((5, 512, 512, 1)),
+            center_rois=np.ones((5, 4)),
+            pixel_rois=np.ones((5, 20, 3))
 
         )
 
@@ -30,9 +30,9 @@ class TestROIMetadataConstructor(TestCase):
         self.assertEqual(roi.description, 'ROI metadata for my experiment')
         self.assertEqual(roi.category, 'test category')
         self.assertEqual(roi.about, 'test about')
-        np.testing.assert_array_equal(roi.image_mask_roi, np.ones((5, 512, 512)))
-        np.testing.assert_array_equal(roi.center_rois, np.ones((4, 5, 6, 7)))
-        np.testing.assert_array_equal(roi.pixel_rois, np.ones((4, 5, 6)))
+        np.testing.assert_array_equal(roi.image_mask_roi, np.ones((5, 512, 512, 1)))
+        np.testing.assert_array_equal(roi.center_rois, np.ones((5, 4)))
+        np.testing.assert_array_equal(roi.pixel_rois, np.ones((5, 20, 3)))
 
 
 class TestROIMetadataRoundtrip(TestCase):
@@ -50,9 +50,9 @@ class TestROIMetadataRoundtrip(TestCase):
             description='roi metadata for my experiment',
             category='test category',
             about='test about',
-            image_mask_roi=np.ones((5, 512, 512)),
-            center_rois=np.ones((4, 5, 6, 7)),
-            pixel_rois=np.ones((4, 5, 6))
+            image_mask_roi=np.ones((5, 512, 512, 1)),
+            center_rois=np.ones((5, 4)),
+            pixel_rois=np.ones((5, 20, 3))
         )
 
         self.nwbfile.add_acquisition(roi)
