@@ -238,7 +238,8 @@ def main():
                                                               " belonging to the ROI. The depth value may represent "
                                                               "to which plane the roi belonged to"),
                                                          quantity='?',
-                                                         dims=(('number_rois', 'x', 'y'), ('number_rois', 'x', 'y', 'z')),
+                                                         dims=(('number_rois', 'x', 'y'),
+                                                               ('number_rois', 'x', 'y', 'z')),
                                                          shape=([None] * 3, [None] * 4)),
                                           NWBDatasetSpec(name='center_rois',
                                                          doc=("ROIs designated as a list specifying the pixel and radio"
