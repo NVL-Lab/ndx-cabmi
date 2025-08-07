@@ -10,17 +10,13 @@ from pynwb.spec import NWBNamespaceBuilder, export_spec, NWBGroupSpec, NWBAttrib
 def main():
     # these arguments were auto-generated from your cookiecutter inputs
     ns_builder = NWBNamespaceBuilder(
-        name="""ndx-cabmi""",
-        version="""0.1.0""",
-        doc="""Extension to include CABMI closed loop experiments""",
-        author=[
-            "Nuria Vendrell Llopis",
-        ],
-        contact=[
-            "nvl2@uab.edu",
-        ],
+        name='''ndx-cabmi''',
+        version='''0.1.0''',
+        doc='''Extension to include CABMI closed loop experiments''',
+        author=['Nuria Vendrell Llopis',],
+        contact=['nvl2@uab.edu',],
     )
-    ns_builder.include_namespace("core")
+    ns_builder.include_namespace('core')
     ns_builder.include_type('NWBDataInterface', namespace='core')
     ns_builder.include_type('LabMetaData', namespace='core')
     ns_builder.include_type('NWBContainer', namespace='core')
@@ -73,11 +69,15 @@ def main():
                                                            doc='Required value of the cursor to start a new trial '
                                                                'after going back to baseline', dtype='float64',
                                                            dims=['number of targets']),
+                                            NWBDatasetSpec(name='conditions_rule',
+                                                           doc='str with the rule to be followed by the conditions'
+                                                               ' for it to be considered hitting a target',
+                                                           dtype='str', dims=['number of conditions']),
                                             NWBDatasetSpec(name='conditions_target',
                                                            doc='value of each of the conditions to be met by the cursor'
                                                                ' for it to be considered hitting a target',
                                                            dtype='float64', dims=['number of conditions']),
-                                            NWBDatasetSpec(name='seconds_per_reward_range',
+                                            NWBDatasetSpec(name='frames_per_reward_range',
                                                            doc='A range on how many frames should elapse before a '
                                                                'reward is expected.', dtype='int32',
                                                            dims=['lower_value|higher_value'], shape=[2])],
@@ -180,8 +180,12 @@ def main():
                                                              'reward control purposes or other experiments',
                                                          dtype='int32', dims=['number_rewards']),
                                           ],
-                                attributes=[NWBAttributeSpec(name='about', doc='about doc', dtype='text',
+                                attributes=[NWBAttributeSpec(name='description', doc='describe the CaBMI results',
+                                                               dtype='text', required=True),
+                                            NWBAttributeSpec(name='about', doc='about doc', dtype='text',
                                                              required=False),
+                                            NWBAttributeSpec(name='experiment_type', doc='Type of experiment performed',
+                                                             dtype='text', required=False),
                                             NWBAttributeSpec(name='self_hit_counter', doc='counter of the amount of '
                                                                                           'self-hits achieved',
                                                              dtype='int32', required=False),
@@ -225,9 +229,7 @@ def main():
                                                              doc='number of the last frame being processed',
                                                              dtype='int32', required=False)])
 
-    ROI_metadata = NWBGroupSpec(neurodata_type_def='ROI_metadata', neurodata_type_inc='NWBDataInterface' \
-    '' \
-    '',
+    ROI_metadata = NWBGroupSpec(neurodata_type_def='ROI_metadata', neurodata_type_inc='NWBDataInterface',
                                 doc='Information of the rois used during the experiment',
                                 datasets=[NWBDatasetSpec(name='image_mask_roi',
                                                          doc=("ROIs designated using a mask of size [width, height] "
@@ -236,8 +238,8 @@ def main():
                                                               " belonging to the ROI. The depth value may represent "
                                                               "to which plane the roi belonged to"),
                                                          quantity='?',
-                                                         dims=(('x', 'y'), ('x', 'y', 'z')),
-                                                         shape=([None] * 2, [None] * 3)),
+                                                         dims=(('number_rois', 'x', 'y'), ('number_rois', 'x', 'y', 'z')),
+                                                         shape=([None] * 3, [None] * 4)),
                                           NWBDatasetSpec(name='center_rois',
                                                          doc=("ROIs designated as a list specifying the pixel and radio"
                                                               "([x1, y1, r1], or voxel ([x1, y1, z1, r1]) "
