@@ -336,13 +336,14 @@ groups:
   datasets:
   - name: image_mask_roi
     dims:
-    - number_rois
-    - x
-    - y
-    - z
+    - - number_rois
+      - x
+      - y
+    - - number_rois
+      - x
+      - y
+      - z
     shape:
-    - null
-    - null
     - null
     - null
     doc: ROIs designated using a mask of size [width, height] (2D recording) or [width,
@@ -351,15 +352,11 @@ groups:
     quantity: '?'
   - name: center_rois
     dims:
-    - number_rois
-    - x1
-    - y1
-    - z1
-    - r1
+    - - number_rois
+      - '3'
+    - - number_rois
+      - '4'
     shape:
-    - null
-    - null
-    - null
     - null
     - null
     doc: ROIs designated as a list specifying the pixel and radio([x1, y1, r1], or
@@ -369,8 +366,12 @@ groups:
     quantity: '?'
   - name: pixel_rois
     dims:
-    - number_rois
-    - number_pixels[x,y,z]
+    - - number_rois
+      - number_pixels
+      - '2'
+    - - number_rois
+      - number_pixels
+      - '3'
     shape:
     - null
     - null
