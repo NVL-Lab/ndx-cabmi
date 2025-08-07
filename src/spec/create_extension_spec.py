@@ -11,7 +11,7 @@ def main():
     # these arguments were auto-generated from your cookiecutter inputs
     ns_builder = NWBNamespaceBuilder(
         name='''ndx-cabmi''',
-        version='''0.1.0''',
+        version='''0.1.1''',
         doc='''Extension to include CABMI closed loop experiments''',
         author=['Nuria Vendrell Llopis',],
         contact=['nvl2@uab.edu',],
@@ -72,7 +72,7 @@ def main():
                                             NWBDatasetSpec(name='conditions_rule',
                                                            doc='str with the rule to be followed by the conditions'
                                                                ' for it to be considered hitting a target',
-                                                           dtype='str', dims=['number of conditions']),
+                                                           dtype='text', dims=['number of conditions']),
                                             NWBDatasetSpec(name='conditions_target',
                                                            doc='value of each of the conditions to be met by the cursor'
                                                                ' for it to be considered hitting a target',

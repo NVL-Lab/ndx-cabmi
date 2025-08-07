@@ -124,6 +124,14 @@ groups:
     shape:
     - null
     doc: Required value of the cursor to start a new trial after going back to baseline
+  - name: conditions_rule
+    dtype: text
+    dims:
+    - number of conditions
+    shape:
+    - null
+    doc: str with the rule to be followed by the conditions for it to be considered
+      hitting a target
   - name: conditions_target
     dtype: float64
     dims:
@@ -132,7 +140,7 @@ groups:
     - null
     doc: value of each of the conditions to be met by the cursor for it to be considered
       hitting a target
-  - name: seconds_per_reward_range
+  - name: frames_per_reward_range
     dtype: int32
     dims:
     - lower_value|higher_value
@@ -144,9 +152,16 @@ groups:
   doc: Data collected while performing a CaBMI experiment
   quantity: '?'
   attributes:
+  - name: description
+    dtype: text
+    doc: describe the CaBMI results
   - name: about
     dtype: text
     doc: about doc
+    required: false
+  - name: experiment_type
+    dtype: text
+    doc: Type of experiment performed
     required: false
   - name: self_hit_counter
     dtype: int32
@@ -321,21 +336,24 @@ groups:
   datasets:
   - name: image_mask_roi
     dims:
-    - - x
+    - - number_rois
+      - x
       - y
-    - - x
+    - - number_rois
+      - x
       - y
       - z
     shape:
     - - null
       - null
+      - null
     - - null
       - null
       - null
+      - null
     doc: ROIs designated using a mask of size [width, height] (2D recording) or [width,
-      height, depth] (3D recording), where for a given pixel a value of 1 indicates
-      belonging to the ROI. The depth value may represent to which plane the roi belonged
-      to
+      height, depth] (3D recording), where for a given pixel a value of 1 indicates  belonging
+      to the ROI. The depth value may represent to which plane the roi belonged to
     quantity: '?'
   - name: center_rois
     dims:
