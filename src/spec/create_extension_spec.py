@@ -238,8 +238,7 @@ def main():
                                                               ' belonging to the ROI. The depth value may represent '
                                                               'to which plane the roi belonged to'),
                                                          quantity='?',
-                                                         dims=(('number_rois', 'x', 'y'),
-                                                               ('number_rois', 'x', 'y', 'z')),
+                                                         dims=('number_rois', 'x', 'y', 'z'),
                                                          shape=None),
                                           NWBDatasetSpec(name='center_rois',
                                                          doc=('ROIs designated as a list specifying the pixel and radio'
@@ -249,7 +248,7 @@ def main():
                                                               ' the Roi given in radio size. The depth value may '
                                                               ' represent to which plane the roi belonged to'),
                                                          quantity='?',
-                                                         dims=(('number_rois', '3'), ('number_rois', '4')),
+                                                         dims=('number_rois', 'x1', 'y1', 'z1', 'r1'),
                                                          shape=None),
                                           NWBDatasetSpec(name='pixel_rois',
                                                          doc=('ROIs designated as a list specifying all the pixels'
@@ -257,8 +256,7 @@ def main():
                                                               ' the items in the list are each of the pixels belonging'
                                                               ' to the roi'),
                                                          quantity='?',
-                                                         dims=(('number_rois', 'number_pixels', '2'),
-                                                               ('number_rois', 'number_pixels', '3')),
+                                                         dims=('number_rois', 'number_pixels[x,y,z]'),
                                                          shape=None)],
                                 attributes=[NWBAttributeSpec(name='description', doc='describe the metadata',
                                                              dtype='text', required=True),
