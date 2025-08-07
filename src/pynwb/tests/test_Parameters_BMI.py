@@ -46,7 +46,7 @@ class TestParametersBMIConstructor(TestCase):
         self.assertEqual(parameters.timeout_window_frames, 4)
         self.assertEqual(parameters.back_to_baseline_threshold, [4.1, 4.1])
         self.assertEqual(parameters.conditions_target, [150.2, 120.1])
-        self.assertEqual(parameters.seconds_per_reward_range, [0, 120])
+        self.assertEqual(parameters.frames_per_reward_range, [0, 3600])
 
 
 class TestParametersBMIRoundtrip(TestCase):

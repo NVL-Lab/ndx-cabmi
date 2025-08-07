@@ -240,7 +240,7 @@ def main():
                                                          quantity='?',
                                                          dims=(('number_rois', 'x', 'y'),
                                                                ('number_rois', 'x', 'y', 'z')),
-                                                         shape=([None] * 3, [None] * 4)),
+                                                         shape=None),
                                           NWBDatasetSpec(name='center_rois',
                                                          doc=('ROIs designated as a list specifying the pixel and radio'
                                                               '([x1, y1, r1], or voxel ([x1, y1, z1, r1]) '
@@ -250,7 +250,7 @@ def main():
                                                               ' represent to which plane the roi belonged to'),
                                                          quantity='?',
                                                          dims=(('number_rois', '3'), ('number_rois', '4')),
-                                                         shape=([None] * 3, [None] * 4)),
+                                                         shape=None),
                                           NWBDatasetSpec(name='pixel_rois',
                                                          doc=('ROIs designated as a list specifying all the pixels'
                                                               '([x1, y1], or voxel ([x1, y1, z1]) of each ROI, where'
@@ -259,7 +259,7 @@ def main():
                                                          quantity='?',
                                                          dims=(('number_rois', 'number_pixels', '2'),
                                                                ('number_rois', 'number_pixels', '3')),
-                                                         shape=([None] * 2, [None] * 3))],
+                                                         shape=None)],
                                 attributes=[NWBAttributeSpec(name='description', doc='describe the metadata',
                                                              dtype='text', required=True),
                                             NWBAttributeSpec(name='category', doc='free category field', dtype='text',
